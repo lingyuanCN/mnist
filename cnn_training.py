@@ -5,6 +5,9 @@ mnist = input_data.read_data_sets('MNIST_data', one_hot=True)
 
 sess = tf.InteractiveSession()
 
+x = tf.placeholder("float", shape=[None, 784])
+y_ = tf.placeholder("float", shape=[None, 10])
+
 def weight_variable(shape):
   initial = tf.truncated_normal(shape, stddev=0.1)
   return tf.Variable(initial)
