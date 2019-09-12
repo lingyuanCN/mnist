@@ -32,22 +32,22 @@ def train(mnist):
     y_ = tf.placeholder(tf.float32, [None, OUTPUT_NODE], name = 'y-input')
 
     weights1 = tf.Variable(
-        tf.truncated_normal([INPUT_NONE, LAYER1_NODE], stddev = 0.1))
+        tf.truncated_normal([INPUT_NODE, LAYER1_NODE], stddev = 0.1))
     biases1 = tf.Variable(tf.constant(0.1, shape=[LAYER1_NODE]))
     weights2 = tf.Variable(
         tf.truncaated_normal([LAYER1_NODE, OUTPUT_NODE], stddev = 0.1))
     biases2 = tf.Variable(tf.constant(0.1, shape=[OUTPUT_NODE]))
 
-    y = innference(x, None, weights1, biases1, weights2, biases2):
+    y = inference(x, None, weights1, biases1, weights2, biases2)
     global_step = tf.Variable(0, trainable = False)
 
     variable_averages = tf.train.ExponentialMovingAverage(
         MOVING_AVERAGE_DECAY, global_step)
-    variables_average_op = variable_averages.apply(
+    variables_averages_op = variable_averages.apply(
         tf.trainable_variables())
 
     average_y = inference(
-        x, variable_average, weights1, biases1, weights2, biases2)
+        x, variable_averages, weights1, biases1, weights2, biases2)
 
     cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
         y, tf.argmax(y_, 1))
@@ -56,7 +56,7 @@ def train(mnist):
 
     regularizer = tf.contrib.layers.l2_regularizer(REGULARIZATION_RATE)
 
-    regularization = regularizer(weights1) = regularizer(weights2)
+    regularization = regularizer(weights1) + regularizer(weights2)
 
     loss = cross_entropy_mean + regularization
 
@@ -66,36 +66,36 @@ def train(mnist):
         mnist.train.num_examples / BATCH_SIZE,
         LEARNING_RATE_DECAY)
 
-train_step = tf.train.GradientDecentOptimizer(learning_rate).minimize(loss, global_step = global_step)
+    train_step = tf.train.GradientDecentOptimizer(learning_rate).minimize(loss, global_step = global_step)
 
-with tf.control_dependencies([train_step, variables_averages_op]):
-    train_op = tf.no_op(name = 'train')
+    with tf.control_dependencies([train_step, variables_averages_op]):
+        train_op = tf.no_op(name = 'train')
 
-correct_prediction = tf.equal(tf.argmax(average_y, 1), tf.argmax(y_, 1))
+    correct_prediction = tf.equal(tf.argmax(average_y, 1), tf.argmax(y_, 1))
 
-accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+    accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
-with tf.Session() as sess:
-    tf.initializa_all_variables().run()
+    with tf.Session() as sess:
+        tf.initializa_all_variables().run()
 
-    validate_feed = {x: mnist.validation.images,
-    y_: mnist.validation.labels}
+        validate_feed = {x: mnist.validation.images,
+        y_: mnist.validation.labels}
 
-    test_feed = {x: validation.images,
-    y_: mnist.validation.labels}
+        test_feed = {x: mnist.test.images,
+        y_: mnist.test.labels}
 
-    for i in range(TRAINING_STEPS):
-        if i % 1000 = 0:
-            validate_acc = sess.run(accuracy, feed_dict = validate_feed)
-            print("After %d training step(s), validation accuracy "
-            "using average model is %g " % (i, validate_acc))
+        for i in range(TRAINING_STEPS):
+            if i % 1000 == 0:
+                validate_acc = sess.run(accuracy, feed_dict = validate_feed)
+                print("After %d training step(s), validation accuracy "
+                "using average model is %g " % (i, validate_acc))
 
-        xs, ys = mnist.train.next_batch(BATCH_SIZE)
-        sess.run(train_op, feed_dict={x: xs, y_: ys})
+            xs, ys = mnist.train.next_batch(BATCH_SIZE)
+            sess.run(train_op, feed_dict={x: xs, y_: ys})
 
-    test_acc = sess.run(accuracy, feed_dict = test_feed)
-    print("After %d training step(s), test accuracy using average "
-    "model is %g" % (TRAINING_STEPS, test_acc))
+        test_acc = sess.run(accuracy, feed_dict = test_feed)
+        print("After %d training step(s), test accuracy using average "
+        "model is %g" % (TRAINING_STEPS, test_acc))
 
 def main(argv=None):
     mnist = input_data.read_data_sets("/MNIST_data", one_hot = True)
