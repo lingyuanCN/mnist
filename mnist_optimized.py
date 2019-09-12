@@ -50,7 +50,7 @@ def train(mnist):
         x, variable_averages, weights1, biases1, weights2, biases2)
 
     cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
-        y, tf.argmax(y_, 1))
+        labels = 'y', logits = tf.argmax(y_, 1))
 
     cross_entropy_mean = tf.reduce_mean(cross_entropy)
 
