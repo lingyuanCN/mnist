@@ -98,7 +98,7 @@ def train(mnist):
         "model is %g" % (TRAINING_STEPS, test_acc))
 
 def main(argv=None):
-    mnist = input_data.read_data_sets("/MNIST_data", one_hot = True)
+    mnist = input_data.read_data_sets("/tmp/data", one_hot = True)
     train(mnist)
 
 if __name__ == '__main__':
