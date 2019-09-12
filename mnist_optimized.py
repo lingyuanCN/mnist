@@ -35,7 +35,7 @@ def train(mnist):
         tf.truncated_normal([INPUT_NODE, LAYER1_NODE], stddev = 0.1))
     biases1 = tf.Variable(tf.constant(0.1, shape=[LAYER1_NODE]))
     weights2 = tf.Variable(
-        tf.truncaated_normal([LAYER1_NODE, OUTPUT_NODE], stddev = 0.1))
+        tf.truncated_normal([LAYER1_NODE, OUTPUT_NODE], stddev = 0.1))
     biases2 = tf.Variable(tf.constant(0.1, shape=[OUTPUT_NODE]))
 
     y = inference(x, None, weights1, biases1, weights2, biases2)
