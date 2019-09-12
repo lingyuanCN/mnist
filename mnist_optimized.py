@@ -76,7 +76,7 @@ def train(mnist):
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
     with tf.Session() as sess:
-        tf.initializa_all_variables().run()
+        tf.initialize_all_variables().run()
 
         validate_feed = {x: mnist.validation.images,
         y_: mnist.validation.labels}
